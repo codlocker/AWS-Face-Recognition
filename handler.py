@@ -30,9 +30,11 @@ def face_recognition_handler(file_name):
 	# 1. Split video into frames
 	os.system(cmd)
 
-	# 2. Face-recog each frame file
+	# 2. Face-recog each frame file to get the first face
 
 	fileList = os.listdir(frames_path)
+
+	faceName = ""
 
 	for file in fileList:
 		unknown_image = face_recognition.load_image_file(f"{frames_path}/{file}")
@@ -41,14 +43,18 @@ def face_recognition_handler(file_name):
 		cprint(f"Comparing the encoding for file name : {file}", "yellow")
 
 		for name, encoded_value in zip(encoded_data["name"], encoded_data["encoding"]):
-			print(name)
-
 			results = face_recognition.compare_faces(unknown_image_face_encoding, [encoded_value])
+			# print(name, bool(results[0]))
+			if results[0] == True:
 
-			print(results)
+				faceName = name
+				break
+		if faceName:
+			break
+	
 
-		 
-
+	# Search facename in DynamoDB
+	return faceName
 
 
 # Define function to download file from S3 bucket
@@ -67,6 +73,9 @@ def download_file_s3(file_name):
 if not os.path.exists(frames_path):
 	os.makedirs(frames_path)
 
-face_recognition_handler('test_0.mp4')
+
+# This will change to actual format
+# face_recognition_handler(event, context)
+print(face_recognition_handler('test_0.mp4'))
 
 
