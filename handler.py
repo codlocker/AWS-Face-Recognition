@@ -51,7 +51,6 @@ def face_recognition_handler(file_name):
 				break
 		if faceName:
 			break
-	
 
 	# Search facename in DynamoDB
 	return faceName
