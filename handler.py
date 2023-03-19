@@ -1,15 +1,16 @@
 import boto3
+import colorama
 import face_recognition
+import glob
 import os
 import pickle
+from botocore.exceptions import ClientError
 from termcolor import cprint
-import colorama
 
 colorama.init()
 input_bucket = 'inputbucket-cse546'
-output_bucket = "546proj2output"
+output_bucket = "outputbucket-cse546"
 encoding_filename = "encoding"
-frames_path = os.path.join(os.getcwd(), "Frames")
 
 # Function to read the 'encoding' file
 def open_encoding(filename):
@@ -18,7 +19,14 @@ def open_encoding(filename):
 	file.close()
 	return data
 
-def face_recognition_handler(file_name):	
+def face_recognition_handler(file_name):
+
+	# 0. Build the baseline
+	frames_path = os.path.join(os.getcwd(), "Frames")
+	if not os.path.exists(frames_path):
+		os.makedirs(frames_path)
+
+
 	local_file_path = download_file_s3(file_name)
 	encoded_data = open_encoding(encoding_filename)
 
@@ -52,8 +60,32 @@ def face_recognition_handler(file_name):
 		if faceName:
 			break
 
-	# Search facename in DynamoDB
-	return faceName
+	# 3. Search facename in DynamoDB
+	
+	result = search_in_dynamodb(facename=faceName)
+
+	# 4. Upload CSV file to S3 bucket.
+	upload_status = False
+	csvFileName = None
+	if result:
+		csvFileName = file_name.split('.')[0] + ".csv"
+		with open(f'{csvFileName}', 'w') as f:
+			f.writelines(result)
+
+		upload_csv_to_bucket(
+			csv_file=csvFileName)
+		upload_status = True
+
+	# 5. Clean Up if Step 4 succeeds
+	if upload_status:
+		# Remove all files in Frames folder
+		print("Clean up script starts...")
+		files = glob.glob(frames_path + "/*")
+		for f in files:
+			cprint(f"Deleting file {f}", "red")
+			os.remove(f)
+
+	return result
 
 
 # Define function to download file from S3 bucket
@@ -69,12 +101,43 @@ def download_file_s3(file_name):
 	return local_file_path
 
 
-if not os.path.exists(frames_path):
-	os.makedirs(frames_path)
+# Search for facename in Dynamo DB
+def search_in_dynamodb(facename):
+	dynamodb = boto3.resource('dynamodb')
+	table = dynamodb.Table('Student_data')
+	if facename:
+		response = table.get_item(Key={
+			"name": facename
+		})
+
+		return f"{response['Item']['name']},{response['Item']['major']},{response['Item']['year']}"
+	else:
+		return None
+
+# Upload csv file to S3 bucket
+def upload_csv_to_bucket(csv_file):
+	s3 = boto3.resource('s3')
+	bucket = s3.Bucket(output_bucket)
+
+	local_file_path = os.path.join(os.getcwd(), csv_file)
+	cprint(f"Local CSV path : {local_file_path}", "white")
+
+	if os.path.exists(local_file_path):
+		cprint(f'Uploading file to S3 : {output_bucket}', "blue")
+		try:
+			response = bucket.upload_file(local_file_path, csv_file)
+		except ClientError as e:
+			cprint(e, "red")
+			exit(-1)
+	else:
+		cprint(f"CSV file : {local_file_path} not found.", "red")
+		exit(-1)
 
 
 # This will change to actual format
 # face_recognition_handler(event, context)
 print(face_recognition_handler('test_0.mp4'))
+
+# print(search_in_dynamodb("president_biden"))
 
 
