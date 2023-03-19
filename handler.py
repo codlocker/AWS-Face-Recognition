@@ -19,8 +19,9 @@ def open_encoding(filename):
 	file.close()
 	return data
 
-def face_recognition_handler(file_name):
-
+def face_recognition_handler(event, context):
+	print(event)
+	file_name = event['Records'][0]['s3']['object']['key']
 	# 0. Build the baseline
 	frames_path = os.path.join(os.getcwd(), "Frames")
 	if not os.path.exists(frames_path):
@@ -135,8 +136,8 @@ def upload_csv_to_bucket(csv_file):
 
 
 # This will change to actual format
-# face_recognition_handler(event, context)
-print(face_recognition_handler('test_0.mp4'))
+face_recognition_handler(event, context)
+# print(face_recognition_handler('test_0.mp4'))
 
 # print(search_in_dynamodb("president_biden"))
 
