@@ -12,6 +12,16 @@ input_bucket = 'inputbucket-cse546'
 output_bucket = "outputbucket-cse546"
 encoding_filename = "encoding"
 
+# Validate whether you are in a docker or machine.
+environ_key = os.environ.get('ENV AM_I_IN_A_DOCKER_CONTAINER', False)
+data_folder = None
+if environ_key:
+	cprint("I am in a docker container.", "green")
+	data_folder = "/tmp/"
+else:
+	cprint("I am in a machine.", "blue")
+	data_folder = os.getcwd() + "/"
+
 # Function to read the 'encoding' file
 def open_encoding(filename):
 	file = open(filename, "rb")
@@ -21,9 +31,14 @@ def open_encoding(filename):
 
 def face_recognition_handler(event, context):
 	print(event)
-	file_name = event['Records'][0]['s3']['object']['key']
+
+	if type(event) == dict:
+		file_name = event['Records'][0]['s3']['object']['key']
+	else:
+		file_name = event
+
 	# 0. Build the baseline
-	frames_path = os.path.join(os.getcwd(), "Frames")
+	frames_path = os.path.join(data_folder, "Frames")
 	if not os.path.exists(frames_path):
 		os.makedirs(frames_path)
 
@@ -93,7 +108,7 @@ def face_recognition_handler(event, context):
 def download_file_s3(file_name):
 	s3 = boto3.resource('s3')
 	bucket = s3.Bucket(input_bucket)
-	local_file_path = os.path.join(os.getcwd(), file_name)
+	local_file_path = os.path.join(data_folder, file_name)
 
 	cprint(f"Local video path : {local_file_path}", "magenta")
 	if not os.path.exists(local_file_path):
@@ -120,7 +135,7 @@ def upload_csv_to_bucket(csv_file):
 	s3 = boto3.resource('s3')
 	bucket = s3.Bucket(output_bucket)
 
-	local_file_path = os.path.join(os.getcwd(), csv_file)
+	local_file_path = os.path.join(data_folder, csv_file)
 	cprint(f"Local CSV path : {local_file_path}", "white")
 
 	if os.path.exists(local_file_path):
@@ -136,8 +151,8 @@ def upload_csv_to_bucket(csv_file):
 
 
 # This will change to actual format
-face_recognition_handler(event, context)
-# print(face_recognition_handler('test_0.mp4'))
+# face_recognition_handler(event, context)
+print(face_recognition_handler('test_1.mp4', None))
 
 # print(search_in_dynamodb("president_biden"))
 
