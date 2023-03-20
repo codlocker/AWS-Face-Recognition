@@ -13,8 +13,11 @@ output_bucket = "outputbucket-cse546"
 encoding_filename = "encoding"
 
 # Validate whether you are in a docker or machine.
-environ_key = os.environ.get('ENV AM_I_IN_A_DOCKER_CONTAINER', False)
+environ_key = os.environ.get('AM_I_IN_A_DOCKER_CONTAINER', False)
 data_folder = None
+
+print("Environ Key:", environ_key)
+
 if environ_key:
 	cprint("I am in a docker container.", "green")
 	data_folder = "/tmp/"
@@ -152,7 +155,7 @@ def upload_csv_to_bucket(csv_file):
 
 # This will change to actual format
 # face_recognition_handler(event, context)
-print(face_recognition_handler('test_1.mp4', None))
+# print(face_recognition_handler('test_1.mp4', None))
 
 # print(search_in_dynamodb("president_biden"))
 
