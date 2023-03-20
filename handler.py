@@ -66,6 +66,7 @@ def face_recognition_handler(event, context):
 	faceName = ""
 
 	for file in fileList:
+		print(f"Located image file : {frames_path}{file}")
 		unknown_image = face_recognition.load_image_file(f"{frames_path}{file}")
 		unknown_image_face_encoding = face_recognition.face_encodings(unknown_image)[0]
 
@@ -90,7 +91,10 @@ def face_recognition_handler(event, context):
 	csvFileName = None
 	if result:
 		csvFileName = file_name.split('.')[0] + ".csv"
-		with open(f'{csvFileName}', 'w') as f:
+		csv_file_path = f"{data_folder}{csvFileName}"
+		print(f"CSV file at {csv_file_path}")
+
+		with open(f'{csv_file_path}', 'w') as f:
 			f.writelines(result)
 
 		upload_csv_to_bucket(
