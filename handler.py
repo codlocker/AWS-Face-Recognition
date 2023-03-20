@@ -43,7 +43,7 @@ def face_recognition_handler(event, context):
 		file_name = event
 
 	# 0. Build the baseline
-	frames_path = os.path.join(data_folder, "Frames")
+	frames_path = os.path.join(data_folder, "Frames") + "/"
 	if not os.path.exists(frames_path):
 		os.makedirs(frames_path)
 
@@ -52,7 +52,7 @@ def face_recognition_handler(event, context):
 	encoded_data = open_encoding(encoding_filename)
 
 	cprint(f"Frames folder: {frames_path}", "magenta")
-	cmd = f'''ffmpeg -i "{str(local_file_path)}" -r 1 "{str(frames_path)}\image-%3d.jpeg" -hide_banner -loglevel error'''
+	cmd = f'''ffmpeg -i "{str(local_file_path)}" -r 1 "{str(frames_path)}image-%3d.jpeg" -hide_banner -loglevel error'''
 
 	cprint(f"Executing: {cmd}", "blue")
 
@@ -66,7 +66,7 @@ def face_recognition_handler(event, context):
 	faceName = ""
 
 	for file in fileList:
-		unknown_image = face_recognition.load_image_file(f"{frames_path}/{file}")
+		unknown_image = face_recognition.load_image_file(f"{frames_path}{file}")
 		unknown_image_face_encoding = face_recognition.face_encodings(unknown_image)[0]
 
 		cprint(f"Comparing the encoding for file name : {file}", "yellow")
