@@ -61,6 +61,7 @@ RUN apt-get install -y ffmpeg
 COPY requirements.txt ${FUNCTION_DIR}
 RUN python${RUNTIME_VERSION} -m pip install -r requirements.txt --target ${FUNCTION_DIR}
 COPY entry.sh /
+RUN ls /home/app
 
 # Copy function code
 COPY handler.py ${FUNCTION_DIR}
