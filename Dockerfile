@@ -64,6 +64,7 @@ COPY entry.sh /
 
 # Copy function code
 COPY handler.py ${FUNCTION_DIR}
+COPY encoding.dat ${FUNCTION_DIR}
 RUN chmod 777 /entry.sh
 RUN chmod +x /entry.sh
 
