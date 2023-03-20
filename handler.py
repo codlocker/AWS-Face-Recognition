@@ -27,7 +27,9 @@ else:
 
 # Function to read the 'encoding' file
 def open_encoding(filename):
-	file = open(filename, "rb")
+	file_path = os.path.join(os.getcwd(), filename)
+	cprint(f"Encoding file path : {file_path}", "blue")
+	file = open(file_path, "rb")
 	data = pickle.load(file)
 	file.close()
 	return data
@@ -155,7 +157,7 @@ def upload_csv_to_bucket(csv_file):
 
 # This will change to actual format
 # face_recognition_handler(event, context)
-# print(face_recognition_handler('test_1.mp4', None))
+# print(face_recognition_handler('test_0.mp4', None))
 
 # print(search_in_dynamodb("president_biden"))
 
