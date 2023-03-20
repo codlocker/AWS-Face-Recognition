@@ -10,7 +10,7 @@ from termcolor import cprint
 colorama.init()
 input_bucket = 'inputbucket-cse546'
 output_bucket = "outputbucket-cse546"
-encoding_filename = "encoding"
+encoding_filename = "encoding.dat"
 
 # Validate whether you are in a docker or machine.
 environ_key = os.environ.get('AM_I_IN_A_DOCKER_CONTAINER', False)
