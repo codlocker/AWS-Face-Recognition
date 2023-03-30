@@ -28,5 +28,7 @@ RESOURCE NAMES:
 
 ![E2E flow](assets/Screenshot%202022-06-20%20213611.jpg)
 
+- Once the docker has been setup, you can run workload.py to execute the test-cases.
 
 Skeleton Forked from : https://github.com/nehavadnere/cse546-project-lambda
+=======
