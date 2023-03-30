@@ -18,3 +18,17 @@ Installation steps:
  - In your docker environment, set-up the docker configuration file (Dockerfile) to run on this folder and push the changes to ECR.
 
 - Once the docker has been setup, you can run workload.py to execute the test-cases.
+
+RESOURCE NAMES:
+
+1. input S3 nucket name : inputbucket-cse546
+2. output S3 bucket name : outputbucket-cse546
+3. Dynamo DB : After configuring AWS CLI, push data to dynamo_db using upload_data_to_dynamo.py
+4. Here's how the end to end pipe looks like
+
+![E2E flow](assets/Screenshot%202022-06-20%20213611.jpg)
+
+- Once the docker has been setup, you can run workload.py to execute the test-cases.
+
+Skeleton Forked from : https://github.com/nehavadnere/cse546-project-lambda
+=======
