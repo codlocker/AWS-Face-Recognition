@@ -31,4 +31,12 @@ RESOURCE NAMES:
 - Once the docker has been setup, you can run workload.py to execute the test-cases.
 
 Skeleton Forked from : https://github.com/nehavadnere/cse546-project-lambda
+
+#### LOCAL ENVIRONMENT SETUP
+
+ - Create a new python environment
+ - Run: `pip install -r requirements.txt`
+ - Uncomment line 177 in handler.py to test in your non-docker IDE environment.
+- Execute `python handler.py`
+
 =======
