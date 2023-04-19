@@ -8,8 +8,8 @@ from botocore.exceptions import ClientError
 from termcolor import cprint
 
 colorama.init()
-input_bucket = 'inputbucket-cse546'
-output_bucket = "outputbucket-cse546"
+input_bucket = 'cse546-grp-dynamo-project3-ingress-bucket'
+output_bucket = "cse546-grp-dynamo-project3-result-bucket"
 encoding_filename = "encoding.dat"
 
 # Validate whether you are in a docker or machine.
@@ -43,7 +43,7 @@ def face_recognition_handler(event, context):
 		print(event)
 
 		if type(event) == dict:
-			file_name = event['Records'][0]['s3']['object']['key']
+			file_name = event['queryStringParameters']['file_name']
 		else:
 			file_name = event
 
